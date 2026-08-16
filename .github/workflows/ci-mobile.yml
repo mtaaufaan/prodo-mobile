@@ -1,0 +1,105 @@
+# ============================================================
+# PRODO Mobile — CI Pipeline
+# Trigger: pull_request ke branch main
+# Jobs: lint → typecheck → expo-export (sequential, fail-fast)
+# ============================================================
+
+name: CI Mobile
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'app/**'
+      - 'src/**'
+      - 'components/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'app.json'
+      - 'tsconfig.json'
+      - '.github/workflows/ci-mobile.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  # ── Job 1: Lint ─────────────────────────────────────────────
+  lint:
+    name: Lint (ESLint)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+  # ── Job 2: Typecheck ─────────────────────────────────────────
+  typecheck:
+    name: TypeScript check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: lint
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run TypeScript compiler
+        run: npx tsc --noEmit
+
+  # ── Job 3: Expo Export (Static Build Check) ──────────────────
+  expo-export:
+    name: Expo export (build check)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: typecheck
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Setup Expo
+        uses: expo/expo-github-action@v8
+        with:
+          expo-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+          eas-version: latest
+
+      - name: Export web bundle
+        run: npx expo export --platform web
+
+      - name: Verify export output
+        run: |
+          ls -la dist/
+          echo "✓ Expo export berhasil"

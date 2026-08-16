@@ -1,0 +1,49 @@
+# ============================================================
+# prodo-mobile — React Native + Expo .gitignore
+# ============================================================
+
+# Dependencies
+node_modules/
+
+# Expo
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Native build artifacts
+android/
+ios/
+*.apk
+*.aab
+*.ipa
+*.keystore
+*.jks
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Environment files — JANGAN commit secrets
+.env
+.env.local
+.env.*.local
+
+# Test artifacts
+coverage/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# EAS (Expo Application Services)
+.easignore
+
+# Metro bundler cache
+.metro-health-check*
