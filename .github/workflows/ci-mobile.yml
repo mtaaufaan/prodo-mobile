@@ -1,6 +1,6 @@
 # ============================================================
 # PRODO Mobile — CI Pipeline
-# Trigger: pull_request ke branch main
+# Trigger: pull_request ke branch develop atau main
 # Jobs: lint → typecheck → expo-export (sequential, fail-fast)
 # ============================================================
 
@@ -9,6 +9,7 @@ name: CI Mobile
 on:
   pull_request:
     branches:
+      - develop
       - main
     paths:
       - 'app/**'
@@ -67,7 +68,7 @@ jobs:
         run: npm ci
 
       - name: Run TypeScript compiler
-        run: npx tsc --noEmit
+        run: npm run typecheck
 
   # ── Job 3: Expo Export (Static Build Check) ──────────────────
   expo-export:
