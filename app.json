@@ -44,7 +44,8 @@
     "extra": {
       "apiBaseUrl": "http://localhost:3001",
       "keycloakIssuer": "http://localhost:8080/realms/PRODO",
-      "keycloakClientId": "prodo-mobile"
+      "keycloakClientId": "prodo-mobile",
+      "h2CiVerification": true
     }
   }
 }
